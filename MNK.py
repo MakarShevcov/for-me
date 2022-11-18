@@ -26,8 +26,8 @@ def MNK(x, y):
     a1 = np.linspace(x.min()/10, x.max()+x.min()/10, 100)
     y1 = k * a1 + b
     A = np.asarray([['k', 'b', 'sigmak', 'sigmab', 'epsilonk', 'epsilonb'], [k, b, sigmak, sigmab, epsilonk, epsilonb]])
-    A1 = A.T
-    print(A1)
+    AT = A.T
+    print(AT)
     plt.plot(x, y, 'r.')
     plt.plot(a1, y1, 'b')
     plt.errorbar(x, y, yerr=0.0065, xerr=0.002, fmt='r.')
