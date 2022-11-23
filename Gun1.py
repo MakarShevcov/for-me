@@ -21,7 +21,7 @@ HEIGHT = 600
 
 
 class Ball:
-    def __init__(self, screen: pygame.Surface, x=20, y = HEIGHT-50):
+    def __init__(self, screen: pygame.Surface, x=15, y = HEIGHT-80):
         """ Конструктор класса ball
 
         Args:
@@ -47,11 +47,6 @@ class Ball:
         # FIXME
         if self.y <= HEIGHT - self.r:
             self.vy -= 10/FPS
-        else:
-            if self.vy <= 0.0025:
-                self.vx -= 10/FPS
-                if self.vx <= 0.0025:
-                    self.vx = 0
         self.x += self.vx
         self.y -= self.vy
         if self.x <= self.r:
@@ -60,10 +55,9 @@ class Ball:
             self.vx *= -1
         if self.y >= HEIGHT - self.r:
             self.vy *= -0.8
-        if self.y <= self.r + 2:
+            self.vx *= 0.99
+        if self.y <= self.r + 5:
             self.vy *= -1
-
-
 
 
     def draw(self):
@@ -123,8 +117,8 @@ class Gun:
         else:
             self.color = GREY
 
-    def draw(self):
-        pygame.draw.circle(screen, self.color, (10, HEIGHT-10), 10)
+    def draw(self, A, B):
+        pygame.draw.line(screen, GREY, (0, HEIGHT - 80), (A, B), 20)
 
     def power_up(self):
         if self.f2_on:
@@ -144,7 +138,7 @@ class Target:
         self.points = 0
         self.live = 1
     # FIXME: don't work!!! How to call this functions when object is created?
-        #self.new_target()
+
 
 
     def hit(self, points=1):
@@ -154,7 +148,8 @@ class Target:
     def draw(self):
         pygame.draw.circle(screen, self.color, (self.x, self.y), self.r)
 
-
+#def new_target():
+    #target = Target()
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 bullet = 0
@@ -164,11 +159,14 @@ clock = pygame.time.Clock()
 gun = Gun(screen)
 target = Target()
 finished = False
-
+tg = [target]
+A = 50
+B = HEIGHT - 80
 while not finished:
     screen.fill(WHITE)
-    gun.draw()
-    target.draw()
+    gun.draw(A, B)
+    for target in tg:
+        target.draw()
     for b in balls:
         b.draw()
     pygame.display.update()
@@ -179,6 +177,8 @@ while not finished:
             finished = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             gun.fire2_start(event)
+            A = 50* math.cos(math.atan((event.pos[1]-450) / (event.pos[0])))
+            B = HEIGHT - 80 + 50 * math.sin(math.atan((event.pos[1]-450) / (event.pos[0])))
         elif event.type == pygame.MOUSEBUTTONUP:
             gun.fire2_end(event)
         elif event.type == pygame.MOUSEMOTION:
@@ -189,7 +189,10 @@ while not finished:
         if b.hittest(target) and target.live:
             target.live = 0
             target.hit()
-            target.new_target()
+            tg.remove(target)
+            target = Target()
+            tg.append(target)
+
     gun.power_up()
 
 pygame.quit()
