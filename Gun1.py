@@ -2,7 +2,6 @@ import math
 from random import choice
 from random import randint
 import pygame
-pygame.display.set_caption("Сталинские репрессии")
 
 FPS = 60
 
@@ -192,18 +191,5 @@ while not finished:
             target.hit()
             target.new_target()
     gun.power_up()
-screen2 = pygame.display.set_mode((500, 500))
-final = True
-while final:
-    for event in pygame.event.get():
-        if event.type == pg.QUIT:
-            final = False
-    screen2.blit(pygame.image.load('StalinDeath.jpg'), (0, 0))
-    f1 = pygame.font.Font(None, 40)
-    f2 = pygame.font.Font(None, 60)
-    text1 = f1.render("Вы расстреляли ", True,
-                      (255, 0, 0))
-    text3 = f1.render("врагов народа ", True,
-                      (255, 0, 0))
-    pygame.display.update()
+
 pygame.quit()
