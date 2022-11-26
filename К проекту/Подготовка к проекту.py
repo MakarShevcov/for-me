@@ -4,7 +4,7 @@ from random import randint
 import pygame.display
 import numpy as np
 
-WIDTH, HEIGHT = 500, 500
+WIDTH, HEIGHT = 600, 600
 FONE_COLOR = (155, 155, 155)
 FPS = 30
 pg.init()
@@ -26,16 +26,32 @@ class Kub:
 def kub(x, y, color):
     Kub(x, y, 50, color).draw_Kub()
 
-texture = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-           [0, 1, 1, 1, 0, 1, 0, 0, 0, 0],
-           [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-           [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+texture1 = [[1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+           [1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0],
+           [1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0],
+           [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
+           [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+           [0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0],
+           [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+           [0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+           [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+texture2= [[1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+           [0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1],
+           [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+           [0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1],
+           [0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+           [1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0],
+           [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+           [0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+           [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
 def array(k):
     b = []
     for i in range(50):
@@ -44,7 +60,7 @@ def array(k):
             a += [k]
         b += [a]
     return b
-def mass():
+def mass(texture):
     mass = []
     for i in range(len(texture)):
         mas = []
@@ -55,41 +71,62 @@ def mass():
                 mas += [0]
         mass += [mas]
     return mass
-def draw_walls():
+def draw_walls(texture):
     for i in range(len(texture)):
         for j in range(len(texture)):
             if texture[i][j] == 1:
                 kub(50*j, 50*i, (150, 150, 150))
 
-def check(x, y):
+def check(x, y, texture):
     zx = int(x//50)
     zy = int(y//50)
-    if mass()[zy][zx] == 1:
+    if mass(texture)[zy][zx] == 1:
         return False
-    elif mass()[zy][zx] == 0:
+    elif mass(texture)[zy][zx] == 0:
         return True
 
-print(mass()[340//50][253//50])
+Exit = pygame.image.load('exit_door_180.png')
+Exx = 0
+Exy = HEIGHT - 50
+texture = texture1
 running = True
 while running:
     screen.fill((0, 0, 0))
     screen.blit(screen, (0, 0))
-    draw_walls()
     screen.blit(pygame.image.load('11781957.png'), (x, y))
-    draw_walls()
+    draw_walls(texture)
+    screen.blit(Exit, (Exx, Exy))
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_RIGHT] and check(x + 41, y) and check(x + 41, y + 40) and x < 460:
+    if keys[pygame.K_RIGHT] and check(x + 41, y, texture) and check(x + 41, y + 40, texture) and x < 558:
         x += speed
-    if keys[pygame.K_LEFT] and check(x - 1, y) and check(x - 1, y + 40) and x > 0:
+    if keys[pygame.K_LEFT] and check(x - 1, y, texture) and check(x - 1, y + 40, texture) and x > 0:
         x -= speed
-    if keys[pygame.K_UP] and check(x, y - 1) and check(x + 40, y - 1) and y > 0:
+    if keys[pygame.K_UP] and check(x, y - 1, texture) and check(x + 40, y - 1, texture) and y > 0:
         y -= speed
-    if keys[pygame.K_DOWN] and check(x, y + 41) and check(x + 40, y + 41) and y < 458:
+    if keys[pygame.K_DOWN] and check(x, y + 41, texture) and check(x + 40, y + 41, texture) and y < 558:
         y += speed
 
-    pygame.display.update()
+    #pygame.display.update()
 
+    if x <= 15 and y >= WIDTH - 50:
+        Exit = pygame.image.load('exit_door.png')
+        Exx = WIDTH - 30
+        Exy = 0
+        texture = texture2
+        x = 100
+        y = 50
+
+    if x >= WIDTH - 70 and y <= 50:
+        Exit = pygame.image.load('exit_door_180.png')
+        Exx = 0
+        Exy = HEIGHT - 50
+        texture = texture1
+        x = 100
+        y = 50
+
+    pygame.display.update()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
 
+pygame.quit()
