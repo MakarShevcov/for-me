@@ -6,15 +6,24 @@ import numpy as np
 
 WIDTH, HEIGHT = 600, 600
 FONE_COLOR = (155, 155, 155)
-FPS = 60
+FPS = 15
 pg.init()
 f_score = pg.font.Font(None, 36)
 screen = pg.display.set_mode((WIDTH, HEIGHT))
 isJump = False
-Jump = 5
+Jump = 3
 x = 0
 y = HEIGHT - 90
 speed = 0.2
+nps = []
+bullets = []
+bullets2 = []
+level = 1
+
+
+
+
+
 class Kub:
     def __init__(self, x, y, size, color):
         self.x = x
@@ -110,10 +119,6 @@ def check(x, y, texture):
     elif texture[zy][zx] == 0:
         return True
 
-nps = []
-bullets = []
-bullets2 = []
-level = 1
 Exit = pygame.image.load('exit_door_180.png')
 Exx = 0
 Exy = 147
@@ -156,14 +161,7 @@ while running:
                 bullet4 = snaryad(round(x + 25), round(y + 25), 5, 'red', 0, -30/FPS)
                 bullets.append(bullet4)
                 score -= 1
-    for bullet in bullets:
-        bullet.draw(screen)
-    for bullet in  bullets:
-        if 0 < bullet.x < 600 and check(bullet.x, bullet.y, texture):
-            bullet.x += bullet.vx
-            bullet.y += bullet.vy
-        else:
-            bullets.pop(bullets.index(bullet))
+
     if keys[pygame.K_RIGHT] and check(x + 41, y, texture) and check(x + 41, y + 40, texture) and x < 558:
         x += speed
     if keys[pygame.K_LEFT] and check(x - 1, y, texture) and check(x - 1, y + 40, texture) and x > 0:
@@ -180,15 +178,72 @@ while running:
                     t = pg.time.get_ticks()
                     y -= (Jump ** 2)
                     Jump -= 1
-            elif 0 > Jump >= -5:
+            elif 0 > Jump >= -3:
                 if pg.time.get_ticks() > (t + 1):
                     t = pg.time.get_ticks()
                     y += (Jump ** 2)
                     Jump -= 1
             else:
-                Jump = 5
+                Jump = 3
                 isJump = False
 
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            bullet5 = snaryad(round(x + 25), round(y + 25), 5, 'red', 10 / FPS, 0)
+            bullets.append(bullet5)
+            score -= 1
+            bullet5.sum = ((event.pos[1] - y)**2 + (event.pos[0] - x)**2)**0.5
+            if 1 >= (event.pos[1] - y)/(event.pos[0] - x) >= -1:
+                if event.pos[0] - x - 20 >= 0:
+                    bullet5.vx = bullet5.vx * (event.pos[0] - x)/bullet5.sum
+                    bullet5.vy = bullet5.vx * (event.pos[1] - y)/bullet5.sum
+                if event.pos[0] - x - 20 <= 0:
+                    bullet5.vx = bullet5.vx * (event.pos[0] - x)/bullet5.sum
+                    bullet5.vy = -bullet5.vx * (event.pos[1] - y)/bullet5.sum
+            if -1 >= (event.pos[1] - y)/(event.pos[0] - x) or (event.pos[1] - y)/(event.pos[0] - x) >= 1:
+                if event.pos[0] - x - 20 >= 0:
+                    bullet5.vx = bullet5.vx * (event.pos[0] - x)/bullet5.sum
+                    bullet5.vy = bullet5.vx * (event.pos[1] - y)/bullet5.sum
+                if event.pos[0] - x - 20 <= 0:
+                    bullet5.vx = bullet5.vx * (event.pos[0] - x - 20)/bullet5.sum
+                    bullet5.vy = -bullet5.vx * (event.pos[1] - y - 20)/bullet5.sum
+
+    for bullet in bullets:
+        if pg.time.get_ticks() > (t + 3000):
+            t = pg.time.get_ticks()
+            bullets.pop(bullets.index(bullet))
+        bullet.draw(screen)
+    for bullet in  bullets:
+        if 5 < bullet.x < 595 and check(bullet.x + 30 / FPS, bullet.y + 30 / FPS, texture):
+            bullet.x += bullet.vx
+            bullet.y += bullet.vy
+        if 5 < bullet.x < 595 and check(bullet.x, bullet.y, texture) and not check(bullet.x + 30 / FPS, bullet.y, texture):
+            bullet.x -= bullet.vx
+            bullet.y += bullet.vy
+            bullet.vx *= -0.3
+        if 5 < bullet.x < 595 and check(bullet.x, bullet.y, texture) and not check(bullet.x, bullet.y + 30 / FPS, texture):
+            bullet.x += bullet.vx
+            bullet.y -= bullet.vy
+            bullet.vy *= -0.3
+        if 5 < bullet.x < 595 and check(bullet.x, bullet.y, texture) and not check(bullet.x - 30 / FPS, bullet.y, texture):
+            bullet.x -= bullet.vx
+            bullet.y += bullet.vy
+            bullet.vx *= -0.3
+        if 5 < bullet.x < 595 and check(bullet.x, bullet.y, texture) and not check(bullet.x, bullet.y - 30 / FPS, texture):
+            bullet.x += bullet.vx
+            bullet.y -= bullet.vy
+            bullet.vy *= -0.3
+        if bullet.x <= 5 or bullet.x >= 595:
+            bullet.x -= bullet.vx
+            bullet.vx *= -1
+        if bullet.y <= 5 or bullet.y >= 595:
+            bullet.y -= bullet.vy
+            bullet.vy *= -1
+        if pg.time.get_ticks() > (t + 5000):
+            t = pg.time.get_ticks()
+            bullets.pop(bullets.index(bullet))
 
 
 
@@ -222,8 +277,4 @@ while running:
         nps += [nusha]
 
     pygame.display.update()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-
 pygame.quit()
