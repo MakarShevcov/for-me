@@ -1,3 +1,5 @@
+#чтобы стрелять, нажмите мышкой в нужном направлении; чтобы ходить, нажимайте A,W,S,D; чтобы стрелять вторыми снарядами, нажимайте Left,Up,Down,Right; 
+
 import math
 import pygame as pg
 import pygame.display
