@@ -411,11 +411,11 @@ while True:
                     score2 += 3
                     nps.remove(np) #при контакте мы его убираем
                     stalin_shoot = 0 #чтобы не стрелял после исчезновения
-            if stalin_shoot:     #он будет в нас стрелять при приближении
-                if ((x + 20) - (stalin.x + stalin.size / 2)) ** 2 + ((y + 20) - (stalin.y + stalin.size / 2)) ** 2 <= 10000:
-                    if pg.time.get_ticks() > (t + 3000): #стреляет раз в 3 секунды
-                        t = pg.time.get_ticks()
-                        nps_gun.fire1()
+                if stalin_shoot:     #он будет в нас стрелять при приближении
+                    if ((x + 20) - (stalin.x + stalin.size / 2)) ** 2 + ((y + 20) - (stalin.y + stalin.size / 2)) ** 2 <= 10000:
+                        if pg.time.get_ticks() > (t + 3000): #стреляет раз в 3 секунды
+                            t = pg.time.get_ticks()
+                            nps_gun.fire1()
         for new_ball in stalin_bullets:
             if (new_ball.x - (x + 20)) ** 2 + (new_ball.y - (y + 20)) ** 2 <= 400: #мы погибаем при попадании его пули
                 running = False
@@ -493,8 +493,8 @@ while True:
             x = 0
             y = HEIGHT - 90
             level = 1
-            nusha = NPS(50, 150, 3 / FPS, 1, 'Ghost.jpg', 50)
-            nps += [nusha, stalin]
+            ghost = NPS(50, 150, 3 / FPS, 1, 'Ghost.jpg', 50)
+            nps += [ghost, stalin]
             for np in nps:
                 np.X = [np.x0]
                 np.Y = [np.y0]
